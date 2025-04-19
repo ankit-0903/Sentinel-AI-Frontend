@@ -1,0 +1,85 @@
+QWidget {
+    background-color: #1e1e1e;
+    font-family: 'Segoe UI', sans-serif;
+    color: #ffffff;
+    font-size: 16px;
+}
+
+/* Title */
+#titleLabel {
+    font-size: 32px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+/* Input Fields */
+QLineEdit {
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background-color: #2c2c2c;
+    color: #ffffff;
+    font-size: 15px;
+}
+
+QLineEdit:focus {
+    border: 1px solid #7d5fff;
+    background-color: #333333;
+}
+
+/* Login Button */
+QPushButton#loginBtn {
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #9b5de5, stop:1 #7d5fff);
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+QPushButton#loginBtn:hover {
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #7d5fff, stop:1 #5f27cd);
+}
+
+/* Signup Button */
+QPushButton#signupBtn {
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #9b5de5, stop:1 #7d5fff);
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+QPushButton#signupBtn:hover {
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #7d5fff, stop:1 #5f27cd);
+}
+
+/* Forgot Password Text */
+#forgotPassword {
+ 
+    font-size: 15px;
+    text-align: right;
+    text-decoration: none;
+    
+}
+
+/* Divider label */
+#orLabel {
+    color: #aaaaaa;
+    font-size: 15px;
+    padding-left: 80px;
+    padding-right: 10px;
+}
+
+/* Image section */
+QLabel[objectName="imageLabel"] {
+    border: none;
+    max-width: 500px;   /* Set maximum width for the image */
+    max-height: 500px;  /* Set maximum height for the image */
+    object-fit: cover;  /* Maintain aspect ratio of the image */
+    border-radius: 10px;  /* Round corners */
+}
