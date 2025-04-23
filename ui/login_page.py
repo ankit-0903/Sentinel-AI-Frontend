@@ -7,8 +7,10 @@ from db.mongo_client import users_collection
 
 
 class LoginPage(QWidget):
-    def __init__(self, switch_to_signup=None):
+    def __init__(self, switch_to_signup=None, switch_to_dashboard=None):
         super().__init__()
+        self.switch_to_signup = switch_to_signup
+        self.switch_to_dashboard = switch_to_dashboard
 
         layout = QHBoxLayout(self)
         layout.setContentsMargins(80, 40, 80, 40)
@@ -89,7 +91,7 @@ class LoginPage(QWidget):
         form_layout.addWidget(self.titleLabel)
         form_layout.addWidget(self.username_input)
         form_layout.addWidget(self.password_input)
-        form_layout.addLayout(remember_forgot_row)  # <- correct placement
+        form_layout.addLayout(remember_forgot_row)  
         form_layout.addWidget(self.login_btn)
         form_layout.addLayout(or_divider)
         form_layout.addWidget(self.signup_btn)
@@ -104,5 +106,17 @@ class LoginPage(QWidget):
             QMessageBox.warning(self, "Input Error", "Please enter both username and password.")
             return
 
-        # Add actual auth logic here
-        QMessageBox.information(self, "Login Success", f"Welcome {username}!")
+        # Check in MongoDB
+        user = users_collection.find_one({"username": username})
+
+        if not user:
+            QMessageBox.critical(self, "Login Failed", "User not found.")
+            return
+
+        if user["password"] != password:
+            QMessageBox.critical(self, "Login Failed", "Incorrect password.")
+            return
+
+        QMessageBox.information(self, "Login Successful", f"Welcome {user['fullname']}!")
+        if self.switch_to_dashboard:
+            self.switch_to_dashboard()

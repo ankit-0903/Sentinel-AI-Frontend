@@ -11,6 +11,7 @@ from db.mongo_client import users_collection
 class SignupPage(QWidget):
     def __init__(self, switch_to_login=None):
         super().__init__()
+        self.switch_to_login = switch_to_login
 
         # Use HBox layout for left-right division
         layout = QHBoxLayout(self)
@@ -103,6 +104,7 @@ class SignupPage(QWidget):
         layout.addLayout(form_layout, 2)  # Stretch factor to take more space on the right
 
     def validate_signup(self):
+
         username = self.username_input.text().strip()
         fullname = self.fullname_input.text().strip()
         phone = self.phone_input.text().strip()
@@ -126,6 +128,27 @@ class SignupPage(QWidget):
             QMessageBox.warning(self, "Input Error", "Passwords do not match.")
             return
 
-        QMessageBox.information(self, "Success", "Account created successfully!")
-        # Insert into DB logic here if needed
+        # Check if username or email already exists
+        if users_collection.find_one({"username": username}):
+            QMessageBox.warning(self, "Signup Failed", "Username already exists.")
+            return
+
+        if users_collection.find_one({"email": email}):
+            QMessageBox.warning(self, "Signup Failed", "Email already registered.")
+            return
+
+        # Save user to MongoDB
+        user_data = {
+            "username": username,
+            "fullname": fullname,
+            "phone": phone,
+            "email": email,
+            "password": password,  # ⚠️ In real apps, use password hashing
+        }
+
+        users_collection.insert_one(user_data)
+
+        QMessageBox.information(self, "Signup Successful", "Account created successfully! Please log in.")
+        if self.switch_to_login:
+            self.switch_to_login()
 
