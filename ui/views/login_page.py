@@ -3,8 +3,10 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
-from db.mongo_client import users_collection
+import os
 
+from auth.keyring_auth import KeyringAuthFixed
+from auth.session_manager import SessionManager
 
 class LoginPage(QWidget):
     def __init__(self, switch_to_signup=None, switch_to_dashboard=None):
@@ -23,8 +25,13 @@ class LoginPage(QWidget):
         image_box.setStyleSheet("border-radius: 10px; border: 1px solid #7d5fff;")
 
         image_label = QLabel(image_box)
-        pixmap = QPixmap("ui//image.png") 
-        image_label.setPixmap(pixmap)
+        image_path = os.path.join("ui", "assests", "image.png")
+        if os.path.exists(image_path):
+            pixmap = QPixmap(image_path)
+            image_label.setPixmap(pixmap)
+        else:
+            image_label.setText("Image\nNot Found")
+            image_label.setStyleSheet("color: #666; text-align: center;")
         image_label.setAlignment(Qt.AlignCenter)
         image_label.setScaledContents(True)
         image_box.setLayout(QVBoxLayout())
@@ -64,6 +71,7 @@ class LoginPage(QWidget):
 
         self.login_btn = QPushButton("Login")
         self.login_btn.setObjectName("loginBtn")
+        self.login_btn.setCursor(Qt.PointingHandCursor)
         self.login_btn.clicked.connect(self.validate_login)
 
         line1 = QFrame()
@@ -86,6 +94,7 @@ class LoginPage(QWidget):
         self.signup_btn.setObjectName("signupBtn")
         if switch_to_signup:
             self.signup_btn.clicked.connect(switch_to_signup)
+            self.signup_btn.setCursor(Qt.PointingHandCursor)
 
         # Add widgets to form layout
         form_layout.addWidget(self.titleLabel)
@@ -106,17 +115,18 @@ class LoginPage(QWidget):
             QMessageBox.warning(self, "Input Error", "Please enter both username and password.")
             return
 
-        # Check in MongoDB
-        user = users_collection.find_one({"username": username})
+        try:
+            success, message, user_data = KeyringAuthFixed.authenticate_user(username, password)
 
-        if not user:
-            QMessageBox.critical(self, "Login Failed", "User not found.")
-            return
+            if not success:
+                QMessageBox.critical(self, "Login Failed", message)
+                return
 
-        if user["password"] != password:
-            QMessageBox.critical(self, "Login Failed", "Incorrect password.")
-            return
+            QMessageBox.information(self, "Login Successful", f"Welcome {user_data['fullname']}!")
 
-        QMessageBox.information(self, "Login Successful", f"Welcome {user['fullname']}!")
-        if self.switch_to_dashboard:
-            self.switch_to_dashboard()
+            # Redirect to dashboard
+            if self.switch_to_dashboard:
+                self.switch_to_dashboard(username)
+
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"An error occurred during login: {str(e)}")

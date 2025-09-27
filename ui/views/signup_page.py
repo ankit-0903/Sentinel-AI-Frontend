@@ -1,11 +1,11 @@
 from PyQt5.QtWidgets import (
-    QWidget, QLabel, QVBoxLayout, QHBoxLayout, 
+    QWidget, QLabel, QVBoxLayout, QHBoxLayout,
     QPushButton, QLineEdit, QFrame, QMessageBox
 )
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
-import re
-from db.mongo_client import users_collection
+import os
+from auth.keyring_auth import KeyringAuthFixed
 
 
 class SignupPage(QWidget):
@@ -25,10 +25,15 @@ class SignupPage(QWidget):
         image_box.setStyleSheet("border-radius: 10px; border: 1px solid #7d5fff;")
 
         image_label = QLabel(image_box)
-        pixmap = QPixmap("ui//image.png")  # Provide the path to your image
-        image_label.setPixmap(pixmap)
+        image_path = os.path.join("ui", "assests", "image.png")
+        if os.path.exists(image_path):
+            pixmap = QPixmap(image_path)
+            image_label.setPixmap(pixmap)
+        else:
+            image_label.setText("Image\nNot Found")
+            image_label.setStyleSheet("color: #666; text-align: center;")
         image_label.setAlignment(Qt.AlignCenter)
-        image_label.setScaledContents(True)  # To scale the image to fit the box
+        image_label.setScaledContents(True)
         image_box.setLayout(QVBoxLayout())  # To ensure the layout works for the QLabel
         image_box.layout().addWidget(image_label)
 
@@ -104,7 +109,6 @@ class SignupPage(QWidget):
         layout.addLayout(form_layout, 2)  # Stretch factor to take more space on the right
 
     def validate_signup(self):
-
         username = self.username_input.text().strip()
         fullname = self.fullname_input.text().strip()
         phone = self.phone_input.text().strip()
@@ -116,39 +120,21 @@ class SignupPage(QWidget):
             QMessageBox.warning(self, "Input Error", "Please fill in all fields.")
             return
 
-        if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email):
-            QMessageBox.warning(self, "Input Error", "Invalid email address.")
-            return
-
-        if len(password) < 6:
-            QMessageBox.warning(self, "Input Error", "Password must be at least 6 characters long.")
-            return
-
         if password != confirm_password:
             QMessageBox.warning(self, "Input Error", "Passwords do not match.")
             return
 
-        # Check if username or email already exists
-        if users_collection.find_one({"username": username}):
-            QMessageBox.warning(self, "Signup Failed", "Username already exists.")
-            return
+        try:
+            success, message = KeyringAuthFixed.register_user(username, fullname, phone, email, password)
 
-        if users_collection.find_one({"email": email}):
-            QMessageBox.warning(self, "Signup Failed", "Email already registered.")
-            return
+            if not success:
+                QMessageBox.warning(self, "Signup Failed", message)
+                return
 
-        # Save user to MongoDB
-        user_data = {
-            "username": username,
-            "fullname": fullname,
-            "phone": phone,
-            "email": email,
-            "password": password,  # ⚠️ In real apps, use password hashing
-        }
+            QMessageBox.information(self, "Signup Successful", "Account created successfully! Please log in.")
+            if self.switch_to_login:
+                self.switch_to_login()
 
-        users_collection.insert_one(user_data)
-
-        QMessageBox.information(self, "Signup Successful", "Account created successfully! Please log in.")
-        if self.switch_to_login:
-            self.switch_to_login()
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"An error occurred during signup: {str(e)}")
 
