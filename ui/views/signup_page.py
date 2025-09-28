@@ -6,6 +6,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 import os
 from auth.keyring_auth import KeyringAuthFixed
+from database.user_service import UserService  # Add this import
 
 
 class SignupPage(QWidget):
@@ -125,11 +126,22 @@ class SignupPage(QWidget):
             return
 
         try:
+            # Register with KeyringAuth (local storage)
             success, message = KeyringAuthFixed.register_user(username, fullname, phone, email, password)
 
             if not success:
                 QMessageBox.warning(self, "Signup Failed", message)
                 return
+
+            # Save to MongoDB Atlas
+            user_service = UserService()
+            mongo_success, mongo_message = user_service.save_user(username, fullname, phone, email, password)
+            
+            if not mongo_success:
+                QMessageBox.warning(self, "Database Warning", 
+                                  f"Account created locally but database save failed: {mongo_message}")
+            else:
+                print(f"✅ User saved to MongoDB: {mongo_message}")
 
             QMessageBox.information(self, "Signup Successful", "Account created successfully! Please log in.")
             if self.switch_to_login:
@@ -137,4 +149,3 @@ class SignupPage(QWidget):
 
         except Exception as e:
             QMessageBox.critical(self, "Error", f"An error occurred during signup: {str(e)}")
-
