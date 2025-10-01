@@ -35,3 +35,8 @@ temp/
 build/
 dist/
 *.egg-info/
+
+# Environment Variable 
+.env
+
+
