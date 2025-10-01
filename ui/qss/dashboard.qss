@@ -5,152 +5,122 @@
     font-family: 'Segoe UI', 'Inter', 'San Francisco', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
+
 /* Enhanced Sidebar */
 #sidebar {
     background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                stop:0 #2a2d3a, stop:0.5 #232937, stop:1 #1e2532);
-    border-right: 1px solid #404040;
-    border-radius: 0px 16px 16px 0px;
+                stop:0 #3a3a3a, stop:0.5 #2e2e2e, stop:1 #262626);
+    border-right: 1px solid #4a4a4a;
+    border-radius: 20px;
+    margin: 10px;
 }
 
-/* App Title Styling */
-#appTitle {
-    font-size: 24px;
-    font-weight: 700;
-    color: #ffffff;
-    padding: 10px 0px;
-    letter-spacing: 0.5px;
+/* Header Section */
+#logo_label {
+    margin-right: 10px;
 }
 
-#appSubtitle {
-    font-size: 11px;
-    font-weight: 500;
-    color: #a0a0a0;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 10px;
+#title_label {
+    font-size: 20px;
+    font-weight: bold;
+    color: #4a67e4;
 }
 
-/* Section Labels */
-#sectionLabel {
+#dashboard_title {
     font-size: 10px;
-    font-weight: 600;
-    color: #7d8590;
+    color: #888888;
     text-transform: uppercase;
-    letter-spacing: 1.2px;
-    margin: 8px 0px 5px 0px;
-    padding-left: 12px;
+    font-weight: bold;
+    padding-left: 5px;
 }
 
-/* User Info */
-#userInfo {
-    font-size: 13px;
-    font-weight: 500;
-    color: #e6e6e6;
-    background-color: rgba(125, 95, 255, 0.1);
-    border: 1px solid rgba(125, 95, 255, 0.3);
-    border-radius: 8px;
-    padding: 8px 12px;
-    margin: 5px 0px;
-}
 
-/* Enhanced Navigation Buttons */
-#homeBtn, #tasksBtn, #agentsBtn, #settingsBtn {
-    background-color: transparent;
-    color: #e1e4e8;
-    border: none;
-    border-radius: 10px;
-    padding: 12px 16px;
+/* Navigation Buttons (General) */
+#home_button, #tasks_button, #agents_button, #settings_button {
     text-align: left;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 8px;
+    background-color: transparent;
+    color: #e0e0e0;
     font-size: 14px;
-    font-weight: 500;
-    margin: 2px 0px;
-    transition: all 0.3s ease;
+    icon-size: 20px 20px;
 }
 
-#homeBtn:hover, #tasksBtn:hover, #agentsBtn:hover, #settingsBtn:hover {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                stop:0 rgba(125, 95, 255, 0.15), stop:1 rgba(125, 95, 255, 0.05));
+#home_button:hover, #tasks_button:hover, #agents_button:hover, #settings_button:hover {
+    background-color: #3d3d3d;
+}
+
+/* Navigation Buttons (Specific) */
+#home_button:checked {
+    background-color: #4a67e4;
     color: #ffffff;
-    border-left: 3px solid #7d5fff;
-    padding-left: 13px;
-    transform: translateX(2px);
 }
 
-#homeBtn:pressed, #tasksBtn:pressed, #agentsBtn:pressed, #settingsBtn:pressed {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                stop:0 rgba(125, 95, 255, 0.25), stop:1 rgba(125, 95, 255, 0.1));
-    transform: translateX(1px);
+#home_button:checked:hover {
+    background-color: #5b79f6;
 }
 
-/* Active state for navigation buttons */
-#homeBtn[active="true"], #tasksBtn[active="true"], #agentsBtn[active="true"], #settingsBtn[active="true"] {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                stop:0 rgba(125, 95, 255, 0.2), stop:1 rgba(125, 95, 255, 0.08));
+#tasks_button, #agents_button, #settings_button {
+    background-color: #2d2d2d;
+}
+
+
+/* User Buttons */
+#user_name_button {
+    background-color: #3a3a3a;
     color: #ffffff;
-    border-left: 3px solid #7d5fff;
-    padding-left: 13px;
-    font-weight: 600;
+    font-weight: bold;
+    text-align: left;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    icon-size: 20px 20px;
 }
 
-/* Profile and Logout Buttons */
-#profileBtn {
+#user_name_button:hover {
+    background-color: #3a3a3a; /* No change on hover for disabled button */
+}
+
+#my_profile_button {
+    color: #b0b0b0;
+    text-align: left;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 8px;
     background-color: transparent;
-    color: #d1d5db;
-    border: 1px solid #404040;
-    border-radius: 8px;
-    padding: 10px 16px;
-    text-align: left;
-    font-size: 13px;
-    font-weight: 500;
-    margin: 2px 0px;
+    font-size: 14px;
+    icon-size: 20px 20px;
 }
 
-#profileBtn:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-    border-color: #6b7280;
+#my_profile_button:hover {
+    background-color: #3d3d3d;
+}
+
+/* Logout Button */
+#logout_button {
+    background-color: #e44a4a;
     color: #ffffff;
-}
-
-#logoutBtn {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                stop:0 #ef4444, stop:1 #dc2626);
-    color: white;
+    text-align: left;
+    padding: 12px 15px;
     border: none;
     border-radius: 8px;
-    padding: 10px 16px;
-    text-align: left;
-    font-size: 13px;
-    font-weight: 600;
-    margin: 8px 0px 0px 0px;
+    font-size: 14px;
+    icon-size: 20px 20px;
 }
 
-#logoutBtn:hover {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                stop:0 #f87171, stop:1 #ef4444);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+#logout_button:hover {
+    background-color: #f65b5b;
 }
 
-#logoutBtn:pressed {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                stop:0 #dc2626, stop:1 #b91c1c);
-    transform: translateY(0px);
-}
-
-/* Profile Dropdown (now unused since buttons are in sidebar) */
-#profileDropdown {
+/* Section Frames */
+#navigation_frame, #user_frame {
+    background-color: transparent;
     border: none;
-    background: none;
 }
 
-/* Cards / Panels */
-#panel {
-    background-color: #2a2a2a;
-    border-radius: 16px;
-    padding: 16px;
-    border: 1px solid #444;
-}
+
 
 /* Status Bar */
 #statusBar {
@@ -179,51 +149,154 @@ QPushButton:enabled {
     border: 1px solid #555;
 }
 
-.connectButton {
-    background-color: #292b40;
-    border: 1px solid #7d5fff;
-    border-radius: 10px;
-    padding: 10px 16px;
-    color: white;
-    font-weight: bold;
-}
-.connectButton:hover {
-    background-color: #3a3a5a;
+
+/* Enhanced Main Content Styling */
+
+/* Dashboard Header */
+#dashboard_header {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                stop:0 rgba(75, 85, 99, 0.1), stop:1 rgba(55, 65, 81, 0.1));
+    border: 1px solid rgba(75, 85, 99, 0.3);
+    border-radius: 16px;
+    margin-bottom: 10px;
 }
 
-/* Disconnect Button */
-.disconnectButton {
-    background-color: #401d1d;
-    border: 1px solid #ff5f5f;
-    border-radius: 10px;
-    padding: 10px 16px;
-    color: white;
-    font-weight: bold;
-}
-.disconnectButton:hover {
-    background-color: #602828;
+#welcome_title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 5px;
 }
 
-/* Horizontal Connect Cards Container */
-#connectContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
-    gap: 20px;
+#welcome_subtitle {
+    font-size: 14px;
+    color: #9ca3af;
+    font-weight: 400;
 }
 
-/* Individual Connect Card */
-.connectCard {
-    background-color: #2a2a3c;
-    border-radius: 20px;
-    padding: 20px;
-    border: 1px solid #444;
-    min-width: 140px;
-    max-width: 160px;
-    text-align: center;
+#system_status {
+    font-size: 14px;
+    font-weight: 600;
+    color: #10b981;
 }
-.connectCard QLabel {
-    padding-top: 6px;
+
+
+/* Statistics Section */
+#stats_section {
+    background-color: transparent;
+    border: none;
+}
+
+
+/* Quick Actions Section */
+#quick_actions {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                stop:0 rgba(75, 85, 99, 0.1), stop:1 rgba(55, 65, 81, 0.1));
+    border: 1px solid rgba(75, 85, 99, 0.3);
+    border-radius: 16px;
+}
+
+#section_title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+#scan_btn, #upload_btn, #report_btn, #settings_btn {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                stop:0 #4f46e5, stop:1 #7c3aed);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 15px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    min-height: 20px;
+}
+
+#scan_btn:hover, #upload_btn:hover, #report_btn:hover, #settings_btn:hover {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                stop:0 #5b52f2, stop:1 #8b42f4);
+}
+
+/* Connection Section */
+#connection_section {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                stop:0 rgba(75, 85, 99, 0.1), stop:1 rgba(55, 65, 81, 0.1));
+    border: 1px solid rgba(75, 85, 99, 0.3);
+    border-radius: 16px;
+}
+
+#service_card {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                stop:0 #2a2a3a, stop:1 #1f1f2e);
+    border: 1px solid #404040;
+    border-radius: 16px;
+    min-height: 180px;
+}
+
+#service_card:hover {
+    border-color: #4f46e5;
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                stop:0 #2d2d3d, stop:1 #222231);
+}
+
+#service_icon {
+    margin-bottom: 8px;
+}
+
+#service_name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+#service_status {
+    font-size: 11px;
+    color: #10b981;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+#connect_btn {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                stop:0 #059669, stop:1 #047857);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
     font-weight: 600;
 }
+
+#connect_btn:hover {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                stop:0 #065f46, stop:1 #064e3b);
+}
+
+#disconnect_btn {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                stop:0 #dc2626, stop:1 #b91c1c);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+#disconnect_btn:hover {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                stop:0 #b91c1c, stop:1 #991b1b);
+}
+
+/* Activity Section */
+#activity_section {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                stop:0 rgba(75, 85, 99, 0.1), stop:1 rgba(55, 65, 81, 0.1));
+    border: 1px solid rgba(75, 85, 99, 0.3);
+    border-radius: 16px;
+}
+

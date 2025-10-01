@@ -12,7 +12,7 @@ class MainApp(QStackedWidget):
         super().__init__()
 
         # Initialize pages with callback references
-        self.signup_page = SignupPage(self.show_login)  
+        self.signup_page = SignupPage(self.show_login)
         self.login_page = LoginPage(self.show_signup, self.show_dashboard)
 
         self.addWidget(self.login_page)
@@ -48,7 +48,8 @@ if __name__ == '__main__':
 
     window = MainApp()
     window.setWindowTitle("Sentinel AI")
-    window.setFixedSize(1000, 700)
+    window.setMinimumSize(800, 600)  # Set minimum size instead of fixed
+    window.resize(1400, 1200)  # Default size
 
     try:
         window.setWindowIcon(QIcon("assets/icon.png"))
