@@ -1,10 +1,13 @@
 import sys
 import os
+import logging
 from PyQt5.QtWidgets import QApplication, QStackedWidget
 from PyQt5.QtGui import QIcon
 from ui.views.signup_page import SignupPage
 from ui.views.login_page import LoginPage
 from ui.views.dashboard import DashboardPage
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 class MainApp(QStackedWidget):

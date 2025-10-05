@@ -8,6 +8,7 @@ class DatabaseConfig:
     MONGODB_CONNECTION_STRING = os.getenv('MONGODB_CONNECTION_STRING', 'mongodb://localhost:27017/')
     MONGODB_DATABASE = os.getenv('MONGODB_DATABASE', 'sentinel_ai_db')
     MONGODB_COLLECTION_USERS = os.getenv('MONGODB_COLLECTION_USERS', 'users')
+    MONGODB_COLLECTION_TOKENS = os.getenv('MONGODB_COLLECTION_TOKENS', 'service_tokens')
     
     # Connection Pool Settings
     MONGODB_MAX_POOL_SIZE = int(os.getenv('MONGODB_MAX_POOL_SIZE', '10'))

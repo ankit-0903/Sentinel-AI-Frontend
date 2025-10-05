@@ -3,18 +3,29 @@ from PyQt5.QtWidgets import (
     QFrame, QMessageBox, QFileDialog, QSpacerItem, QSizePolicy,
     QGridLayout
 )
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt, QTimer, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QPixmap, QFont, QIcon
 import os
 from auth.session_manager import SessionManager
 
+from services.service_manager import ServiceManager
+from concurrent.futures import Future, ThreadPoolExecutor
+from services.meet_service import MeetService
+import logging
+from concurrent.futures import ThreadPoolExecutor
+
+logging.basicConfig(level=logging.DEBUG)
 
 class DashboardPage(QWidget):
+    # signal emitted from worker thread -> handled on main thread
+    service_result = pyqtSignal(str, bool, str)
+
     def __init__(self, main_app=None, username=None):
         super().__init__()
 
         self.main_app = main_app
         self.username = username
+        self.service_manager = ServiceManager()
 
         # Check if user is logged in using SessionManager
         if not self.username or not SessionManager.is_logged_in(self.username):
@@ -30,6 +41,16 @@ class DashboardPage(QWidget):
 
         # Initialize responsive variables
         self.is_compact_mode = False
+
+        # Background executor and service instance
+        self._executor = ThreadPoolExecutor(max_workers=2)
+        self._service_status_labels = {}   # map service name -> QLabel
+        self._logger = logging.getLogger(__name__)
+        self._meet_service = MeetService()
+
+        # Connect the service_result signal to the _on_service_result slot
+        self.service_result.connect(self._on_service_result)
+
         self.setup_layout()
 
     def setup_layout(self):
@@ -369,22 +390,31 @@ class DashboardPage(QWidget):
             name_label.setAlignment(Qt.AlignCenter)
 
             # Status indicator
-            status_label = QLabel("🟢 Connected")
+            status_label = QLabel("🔴 Disconnected")
             status_label.setObjectName("service_status")
             status_label.setAlignment(Qt.AlignCenter)
+
+            # store label by service name (reliable lookup)
+            self._service_status_labels[service] = status_label
 
             # Action buttons
             button_layout = QHBoxLayout()
             button_spacing = 6 if self.is_compact_mode else 8
             button_layout.setSpacing(button_spacing)
 
-            connect_btn = QPushButton("Monitor")
+            connect_btn = QPushButton("Connect")
             connect_btn.setObjectName("connect_btn")
             connect_btn.setCursor(Qt.PointingHandCursor)
+            connect_btn.setProperty("service", service)
+            connect_btn.setProperty("status_label", status_label)
+            connect_btn.clicked.connect(self.on_connect_clicked)
 
             disconnect_btn = QPushButton("Stop")
             disconnect_btn.setObjectName("disconnect_btn")
             disconnect_btn.setCursor(Qt.PointingHandCursor)
+            disconnect_btn.setProperty("service", service)
+            disconnect_btn.setProperty("status_label", status_label)
+            disconnect_btn.clicked.connect(self.on_disconnect_clicked)
 
             button_layout.addWidget(connect_btn)
             button_layout.addWidget(disconnect_btn)
@@ -456,5 +486,59 @@ class DashboardPage(QWidget):
         if file_name:
             print("Training agent on file:", file_name)
 
+    def on_connect_clicked(self):
+        sender = self.sender()
+        service = sender.property("service")
+        label = self._service_status_labels.get(service)
+        self._logger.debug("Connect clicked for service=%s label=%s", service, bool(label))
+        if label:
+            label.setText("🟡 Connecting...")
+            label.repaint()
+        self._logger.debug("Registered service keys: %s", list(self._service_status_labels.keys()))
 
-    
+        if service == "GMeet":
+            future = self._executor.submit(self._meet_service.connect)
+        else:
+            future = self._executor.submit(lambda: (True, "Connected (placeholder)"))
+
+        def _done(fut, svc=service):
+            try:
+                ok, message = fut.result()
+            except Exception as exc:
+                ok, message = False, str(exc)
+            self._logger.debug("Worker finished for %s ok=%s msg=%s", svc, ok, message)
+            # emit Qt signal — safe across threads
+            try:
+                self.service_result.emit(svc, ok, message)
+            except Exception:
+                self._logger.exception("Failed emitting service_result for %s", svc)
+
+        future.add_done_callback(_done)
+
+    @pyqtSlot(str, bool, str)
+    def _on_service_result(self, service: str, ok: bool, message: str):
+        self._logger.debug("_on_service_result called service=%s ok=%s", service, ok)
+        label = self._service_status_labels.get(service)
+        if label:
+            label.setText("🟢 Connected" if ok else "🔴 Error")
+            label.repaint()
+            label.update()
+        else:
+            self._logger.warning("No status label found for service=%s", service)
+
+        if ok:
+            QMessageBox.information(self, service, message)
+        else:
+            QMessageBox.warning(self, f"{service} error", message)
+
+    def on_disconnect_clicked(self):
+        sender = self.sender()
+        service = sender.property("service")
+        status_label = sender.property("status_label")
+        if status_label:
+            status_label.setText("🔴 Disconnecting...")
+        # Simple no-op disconnect for now
+        def _update():
+            if status_label:
+                status_label.setText("🔴 Disconnected")
+        QTimer.singleShot(200, _update)
